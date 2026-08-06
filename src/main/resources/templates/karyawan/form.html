@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title=${karyawan.id == null ? 'Tambah Karyawan' : 'Edit Karyawan'})}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1 th:text="${karyawan.id == null ? 'Tambah Karyawan' : 'Edit Karyawan'}">Form Karyawan</h1>
+                <p class="subtitle">Lengkapi data karyawan di bawah ini</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <form th:action="@{/karyawan/simpan}" th:object="${karyawan}" method="post">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nip">NIP</label>
+                        <input type="text" id="nip" th:field="*{nip}">
+                        <span class="error-text" th:if="${#fields.hasErrors('nip')}" th:errors="*{nip}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="namaLengkap">Nama Lengkap</label>
+                        <input type="text" id="namaLengkap" th:field="*{namaLengkap}">
+                        <span class="error-text" th:if="${#fields.hasErrors('namaLengkap')}" th:errors="*{namaLengkap}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jenisKelamin">Jenis Kelamin</label>
+                        <select id="jenisKelamin" th:field="*{jenisKelamin}">
+                            <option value="">-- Pilih --</option>
+                            <option th:each="jk : ${jenisKelaminList}" th:value="${jk}" th:text="${jk.label}"></option>
+                        </select>
+                        <span class="error-text" th:if="${#fields.hasErrors('jenisKelamin')}" th:errors="*{jenisKelamin}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tempatLahir">Tempat Lahir</label>
+                        <input type="text" id="tempatLahir" th:field="*{tempatLahir}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tanggalLahir">Tanggal Lahir</label>
+                        <input type="date" id="tanggalLahir" th:field="*{tanggalLahir}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="noTelepon">No. Telepon</label>
+                        <input type="text" id="noTelepon" th:field="*{noTelepon}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" th:field="*{email}">
+                        <span class="error-text" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="departemen">Departemen</label>
+                        <input type="text" id="departemen" th:field="*{departemen}">
+                        <span class="error-text" th:if="${#fields.hasErrors('departemen')}" th:errors="*{departemen}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jabatan">Jabatan</label>
+                        <input type="text" id="jabatan" th:field="*{jabatan}">
+                        <span class="error-text" th:if="${#fields.hasErrors('jabatan')}" th:errors="*{jabatan}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tanggalMasuk">Tanggal Masuk</label>
+                        <input type="date" id="tanggalMasuk" th:field="*{tanggalMasuk}">
+                        <span class="error-text" th:if="${#fields.hasErrors('tanggalMasuk')}" th:errors="*{tanggalMasuk}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="statusKepegawaian">Status Kepegawaian</label>
+                        <select id="statusKepegawaian" th:field="*{statusKepegawaian}">
+                            <option value="">-- Pilih --</option>
+                            <option th:each="s : ${statusList}" th:value="${s}" th:text="${s}"></option>
+                        </select>
+                        <span class="error-text" th:if="${#fields.hasErrors('statusKepegawaian')}" th:errors="*{statusKepegawaian}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="aktif">Status Aktif</label>
+                        <select id="aktif" th:field="*{aktif}">
+                            <option value="true">Aktif</option>
+                            <option value="false">Nonaktif</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full">
+                        <label for="alamat">Alamat</label>
+                        <textarea id="alamat" rows="2" th:field="*{alamat}"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <a th:href="@{/karyawan}" class="btn btn-outline">Batal</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

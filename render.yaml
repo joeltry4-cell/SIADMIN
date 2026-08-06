@@ -1,0 +1,40 @@
+databases:
+  - name: siadmin-db
+    plan: free
+    databaseName: siadmin
+    user: siadmin
+
+services:
+  - type: web
+    name: siadmin
+    env: java
+    plan: free
+    buildCommand: "./mvnw clean package -DskipTests"
+    startCommand: "java -jar target/siadmin-0.0.1-SNAPSHOT.jar"
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: DB_HOST
+        fromDatabase:
+          name: siadmin-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: siadmin-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: siadmin-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: siadmin-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: siadmin-db
+          property: password
+      - key: SIADMIN_ADMIN_USERNAME
+        value: admin
+      - key: SIADMIN_ADMIN_PASSWORD
+        generateValue: true

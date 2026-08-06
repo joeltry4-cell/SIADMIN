@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Dashboard')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1>Dashboard</h1>
+                <p class="subtitle">Ringkasan administrasi karyawan</p>
+            </div>
+        </div>
+
+        <div th:if="${isAdmin}">
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="value" th:text="${totalKaryawan}">0</div>
+                    <div class="label">Total Karyawan</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" th:text="${hadir}">0</div>
+                    <div class="label">Hadir Hari Ini</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" th:text="${izin}">0</div>
+                    <div class="label">Izin / Sakit / Cuti</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" th:text="${belumAbsen}">0</div>
+                    <div class="label">Belum Mengisi Absensi</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <p>Gunakan menu <strong>Data Karyawan</strong> untuk mengelola data pegawai, dan <strong>Rekap Absensi</strong> untuk memantau kehadiran harian.</p>
+            </div>
+        </div>
+
+        <div th:unless="${isAdmin}">
+            <div class="card" th:if="${karyawan != null}">
+                <h2 class="mt-0" th:text="'Halo, ' + ${karyawan.namaLengkap}">Halo</h2>
+                <p class="text-muted" th:text="${karyawan.jabatan} + ' &middot; ' + ${karyawan.departemen}"></p>
+                <p th:if="${sudahAbsenHariIni}" class="badge badge-green">Anda sudah mengisi absensi hari ini</p>
+                <p th:unless="${sudahAbsenHariIni}">
+                    <a th:href="@{/absensi/tambah}" class="btn btn-primary">Isi Absensi Hari Ini</a>
+                </p>
+            </div>
+            <div class="card" th:if="${karyawan == null}">
+                <p class="text-muted">Akun Anda belum terhubung dengan data karyawan. Hubungi admin untuk menautkan akun Anda.</p>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

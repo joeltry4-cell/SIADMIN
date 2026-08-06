@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk - SIADMIN</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="login-page">
+    <div class="login-card">
+        <h1>SIADMIN</h1>
+        <p class="subtitle">Sistem Administrasi Karyawan</p>
+
+        <div class="flash-error" th:if="${param.error}">
+            Username atau password salah.
+        </div>
+        <div class="flash-success" th:if="${param.logout}">
+            Anda berhasil keluar.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" autofocus required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Masuk</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

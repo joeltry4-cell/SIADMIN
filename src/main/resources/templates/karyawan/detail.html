@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Detail Karyawan')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1 th:text="${karyawan.namaLengkap}">Nama Karyawan</h1>
+                <p class="subtitle" th:text="${karyawan.jabatan} + ' &middot; ' + ${karyawan.departemen}">Jabatan</p>
+            </div>
+            <div>
+                <a th:href="@{/karyawan/edit/{id}(id=${karyawan.id})}" class="btn btn-outline">Edit</a>
+                <a th:href="@{/karyawan}" class="btn btn-outline">Kembali</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="form-grid">
+                <div><strong>NIP</strong><br><span th:text="${karyawan.nip}"></span></div>
+                <div><strong>Jenis Kelamin</strong><br><span th:text="${karyawan.jenisKelamin?.label}"></span></div>
+                <div><strong>Tempat, Tanggal Lahir</strong><br>
+                    <span th:text="${karyawan.tempatLahir} + ', ' + ${karyawan.tanggalLahir}"></span>
+                </div>
+                <div><strong>No. Telepon</strong><br><span th:text="${karyawan.noTelepon}"></span></div>
+                <div><strong>Email</strong><br><span th:text="${karyawan.email}"></span></div>
+                <div><strong>Tanggal Masuk</strong><br><span th:text="${karyawan.tanggalMasuk}"></span></div>
+                <div><strong>Status Kepegawaian</strong><br><span th:text="${karyawan.statusKepegawaian}"></span></div>
+                <div>
+                    <strong>Status</strong><br>
+                    <span th:if="${karyawan.aktif}" class="badge badge-green">Aktif</span>
+                    <span th:unless="${karyawan.aktif}" class="badge badge-gray">Nonaktif</span>
+                </div>
+                <div class="form-group full"><strong>Alamat</strong><br><span th:text="${karyawan.alamat}"></span></div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

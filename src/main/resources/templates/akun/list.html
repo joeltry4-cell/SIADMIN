@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Manajemen Akun')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1>Manajemen Akun</h1>
+                <p class="subtitle">Kelola akun login admin dan staf</p>
+            </div>
+            <a th:href="@{/akun/tambah}" class="btn btn-primary">+ Tambah Akun</a>
+        </div>
+
+        <div class="flash-success" th:if="${pesan}" th:text="${pesan}"></div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Peran</th>
+                        <th>Terhubung ke Karyawan</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u : ${daftarAkun}">
+                        <td th:text="${u.username}"></td>
+                        <td>
+                            <span class="badge" th:classappend="${u.role.name() == 'ADMIN'} ? 'badge-blue' : 'badge-gray'" th:text="${u.role}"></span>
+                        </td>
+                        <td th:text="${u.karyawan != null ? u.karyawan.namaLengkap : '-'}"></td>
+                        <td>
+                            <span th:if="${u.enabled}" class="badge badge-green">Aktif</span>
+                            <span th:unless="${u.enabled}" class="badge badge-gray">Nonaktif</span>
+                        </td>
+                        <td>
+                            <form th:action="@{/akun/hapus/{id}(id=${u.id})}" method="post" style="display:inline"
+                                  onsubmit="return confirm('Hapus akun ini?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="empty-state" th:if="${#lists.isEmpty(daftarAkun)}">
+                    Belum ada akun.
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

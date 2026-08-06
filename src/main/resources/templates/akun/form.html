@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Tambah Akun')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1>Tambah Akun</h1>
+                <p class="subtitle">Buat akun login untuk admin atau staf</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="flash-error" th:if="${error}" th:text="${error}"></div>
+
+            <form th:action="@{/akun/simpan}" method="post">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Peran</label>
+                        <select id="role" name="role">
+                            <option th:each="r : ${roleList}" th:value="${r}" th:text="${r}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="karyawanId">Tautkan ke Karyawan (opsional)</label>
+                        <select id="karyawanId" name="karyawanId">
+                            <option value="">-- Tidak ditautkan --</option>
+                            <option th:each="k : ${daftarKaryawan}" th:value="${k.id}" th:text="${k.namaLengkap} + ' (' + ${k.nip} + ')'"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <a th:href="@{/akun}" class="btn btn-outline">Batal</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

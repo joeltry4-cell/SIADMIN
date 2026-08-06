@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Absensi Saya')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1>Absensi Saya</h1>
+                <p class="subtitle" th:if="${karyawan != null}" th:text="${karyawan.namaLengkap} + ' &middot; ' + ${karyawan.jabatan}"></p>
+            </div>
+            <a th:if="${karyawan != null and !sudahAbsenHariIni}" th:href="@{/absensi/tambah}" class="btn btn-primary">+ Isi Absensi Hari Ini</a>
+        </div>
+
+        <div class="flash-success" th:if="${pesan}" th:text="${pesan}"></div>
+
+        <div class="card" th:if="${karyawan == null}">
+            <p class="text-muted">Akun Anda belum terhubung dengan data karyawan, sehingga tidak dapat mengisi absensi. Hubungi admin untuk menautkan akun.</p>
+        </div>
+
+        <div class="card" th:if="${karyawan != null}">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Jam Masuk</th>
+                        <th>Jam Keluar</th>
+                        <th>Status</th>
+                        <th>Keterangan</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="a : ${daftarAbsensi}">
+                        <td th:text="${a.tanggal}"></td>
+                        <td th:text="${a.jamMasuk} ?: '-'"></td>
+                        <td th:text="${a.jamKeluar} ?: '-'"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${a.status.name() == 'HADIR'} ? 'badge-green' : (${a.status.name() == 'ALPA'} ? 'badge-red' : 'badge-amber')"
+                                  th:text="${a.status}"></span>
+                        </td>
+                        <td th:text="${a.keterangan}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="empty-state" th:if="${#lists.isEmpty(daftarAbsensi)}">
+                    Belum ada riwayat absensi.
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

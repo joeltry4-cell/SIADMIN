@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' - SIADMIN'">SIADMIN</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<aside class="sidebar" th:fragment="sidebar">
+    <div class="brand">
+        SIADMIN
+        <small>Sistem Administrasi Karyawan</small>
+    </div>
+    <nav>
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/karyawan}" sec:authorize="hasRole('ADMIN')">Data Karyawan</a>
+        <a th:href="@{/absensi}">Absensi Saya</a>
+        <a th:href="@{/absensi/rekap}" sec:authorize="hasRole('ADMIN')">Rekap Absensi</a>
+        <a th:href="@{/akun}" sec:authorize="hasRole('ADMIN')">Manajemen Akun</a>
+    </nav>
+    <div class="user-box">
+        <div>Masuk sebagai <strong th:text="${#authentication.name}">user</strong></div>
+        <div style="margin-top:6px;"><a th:href="@{/profil/ganti-password}" style="font-size:12px;">Ganti Password</a></div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout">Keluar</button>
+        </form>
+    </div>
+</aside>
+
+</body>
+</html>
