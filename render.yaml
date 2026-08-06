@@ -1,9 +1,3 @@
-databases:
-  - name: siadmin-db
-    plan: free
-    databaseName: siadmin
-    user: siadmin
-
 services:
   - type: web
     name: siadmin
@@ -15,25 +9,15 @@ services:
       - key: SPRING_PROFILES_ACTIVE
         value: render
       - key: DB_HOST
-        fromDatabase:
-          name: siadmin-db
-          property: host
+        value: aws-0-ap-southeast-1.pooler.supabase.com
       - key: DB_PORT
-        fromDatabase:
-          name: siadmin-db
-          property: port
+        value: "5432"
       - key: DB_NAME
-        fromDatabase:
-          name: siadmin-db
-          property: database
+        value: postgres
       - key: DB_USER
-        fromDatabase:
-          name: siadmin-db
-          property: user
+        value: siadmin_app.ntacdttgxheihhmhsxls
       - key: DB_PASSWORD
-        fromDatabase:
-          name: siadmin-db
-          property: password
+        sync: false
       - key: SIADMIN_ADMIN_USERNAME
         value: admin
       - key: SIADMIN_ADMIN_PASSWORD
