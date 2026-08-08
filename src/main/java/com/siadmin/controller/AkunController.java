@@ -68,4 +68,13 @@ public class AkunController {
         redirectAttributes.addFlashAttribute("pesan", "Akun berhasil dihapus");
         return "redirect:/akun";
     }
+
+    @PostMapping("/reset-password/{id}")
+    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String username = userService.findById(id).getUsername();
+        String passwordBaru = userService.resetPassword(id);
+        redirectAttributes.addFlashAttribute("pesan",
+                "Password baru untuk '" + username + "': " + passwordBaru + " — segera sampaikan ke pengguna.");
+        return "redirect:/akun";
+    }
 }

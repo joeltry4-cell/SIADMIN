@@ -39,7 +39,11 @@
                             <span th:if="${u.enabled}" class="badge badge-green">Aktif</span>
                             <span th:unless="${u.enabled}" class="badge badge-gray">Nonaktif</span>
                         </td>
-                        <td>
+                        <td style="display:flex; gap:6px;">
+                            <form th:action="@{/akun/reset-password/{id}(id=${u.id})}" method="post" style="display:inline"
+                                  onsubmit="return confirm('Reset password akun ini? Password lama akan tidak berlaku.');">
+                                <button type="submit" class="btn btn-outline btn-sm">Reset Password</button>
+                            </form>
                             <form th:action="@{/akun/hapus/{id}(id=${u.id})}" method="post" style="display:inline"
                                   onsubmit="return confirm('Hapus akun ini?');">
                                 <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
