@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Laporan Bulanan')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1>Laporan Bulanan Absensi</h1>
+                <p class="subtitle">Rekap kehadiran seluruh karyawan aktif per bulan</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <form class="search-bar" method="get" th:action="@{/laporan/bulanan}">
+                <input type="month" name="periode" th:value="${periode}">
+                <button type="submit" class="btn btn-outline">Tampilkan</button>
+                <a th:href="@{/laporan/bulanan/excel(periode=${periode})}" class="btn btn-outline">Export Excel</a>
+                <a th:href="@{/laporan/bulanan/pdf(periode=${periode})}" class="btn btn-outline">Export PDF</a>
+            </form>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>NIP</th>
+                        <th>Nama</th>
+                        <th>Departemen</th>
+                        <th>Hadir</th>
+                        <th>Izin</th>
+                        <th>Sakit</th>
+                        <th>Cuti</th>
+                        <th>Alpa</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="r : ${daftarRekap}">
+                        <td th:text="${r.karyawan.nip}"></td>
+                        <td th:text="${r.karyawan.namaLengkap}"></td>
+                        <td th:text="${r.karyawan.departemen}"></td>
+                        <td th:text="${r.hadir}"></td>
+                        <td th:text="${r.izin}"></td>
+                        <td th:text="${r.sakit}"></td>
+                        <td th:text="${r.cuti}"></td>
+                        <td th:text="${r.alpa}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="empty-state" th:if="${#lists.isEmpty(daftarRekap)}">
+                    Tidak ada data karyawan aktif untuk bulan ini.
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

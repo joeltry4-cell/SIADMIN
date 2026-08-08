@@ -1,7 +1,9 @@
 package com.siadmin.service;
 
+import com.siadmin.model.AksiAudit;
 import com.siadmin.model.Absensi;
 import com.siadmin.model.Karyawan;
+import com.siadmin.model.StatusAbsensi;
 import com.siadmin.repository.AbsensiRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +15,11 @@ import java.util.Optional;
 public class AbsensiService {
 
     private final AbsensiRepository absensiRepository;
+    private final AuditLogService auditLogService;
 
-    public AbsensiService(AbsensiRepository absensiRepository) {
+    public AbsensiService(AbsensiRepository absensiRepository, AuditLogService auditLogService) {
         this.absensiRepository = absensiRepository;
+        this.auditLogService = auditLogService;
     }
 
     public List<Absensi> findByKaryawan(Karyawan karyawan) {
@@ -50,10 +54,34 @@ public class AbsensiService {
     }
 
     public Absensi save(Absensi absensi) {
-        return absensiRepository.save(absensi);
+        boolean isNew = absensi.getId() == null;
+        Absensi saved = absensiRepository.save(absensi);
+        auditLogService.log(AuditLogService.currentUsername(), isNew ? AksiAudit.CREATE : AksiAudit.UPDATE,
+                "Absensi", saved.getId(),
+                "Absensi " + saved.getKaryawan().getNamaLengkap() + " tanggal " + saved.getTanggal()
+                        + " status " + saved.getStatus());
+        return saved;
     }
 
     public void deleteById(Long id) {
+        Absensi absensi = findById(id);
         absensiRepository.deleteById(id);
+        auditLogService.log(AuditLogService.currentUsername(), AksiAudit.DELETE, "Absensi", id,
+                "Absensi " + absensi.getKaryawan().getNamaLengkap() + " tanggal " + absensi.getTanggal() + " dihapus");
+    }
+
+    /**
+     * Dipakai khusus oleh persetujuan cuti: create-or-overwrite baris absensi untuk satu tanggal,
+     * tanpa mencatat audit log per baris (approval multi-hari cukup 1 entry APPROVE di CutiService).
+     */
+    public void upsertUntukCuti(Karyawan karyawan, LocalDate tanggal, StatusAbsensi status, String keterangan) {
+        Absensi absensi = findByKaryawanAndTanggal(karyawan, tanggal).orElseGet(Absensi::new);
+        absensi.setKaryawan(karyawan);
+        absensi.setTanggal(tanggal);
+        absensi.setStatus(status);
+        absensi.setJamMasuk(null);
+        absensi.setJamKeluar(null);
+        absensi.setKeterangan(keterangan);
+        absensiRepository.save(absensi);
     }
 }

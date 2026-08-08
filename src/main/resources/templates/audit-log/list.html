@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Audit Log')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1>Audit Log</h1>
+                <p class="subtitle">Riwayat perubahan data oleh pengguna</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <form class="search-bar" method="get" th:action="@{/audit-log}">
+                <input type="text" name="entitas" placeholder="Entitas (mis. Karyawan, Cuti)" th:value="${entitas}">
+                <input type="date" name="dari" th:value="${dari}">
+                <input type="date" name="sampai" th:value="${sampai}">
+                <button type="submit" class="btn btn-outline">Filter</button>
+            </form>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Waktu</th>
+                        <th>Username</th>
+                        <th>Aksi</th>
+                        <th>Entitas</th>
+                        <th>ID Entitas</th>
+                        <th>Keterangan</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="log : ${daftarLog}">
+                        <td th:text="${log.waktu}"></td>
+                        <td th:text="${log.username}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${log.aksi.name() == 'CREATE' or log.aksi.name() == 'APPROVE'} ? 'badge-green' : (${log.aksi.name() == 'DELETE' or log.aksi.name() == 'REJECT'} ? 'badge-red' : 'badge-blue')"
+                                  th:text="${log.aksi}"></span>
+                        </td>
+                        <td th:text="${log.entitas}"></td>
+                        <td th:text="${log.entitasId}"></td>
+                        <td th:text="${log.keterangan}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="empty-state" th:if="${#lists.isEmpty(daftarLog)}">
+                    Tidak ada riwayat perubahan.
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

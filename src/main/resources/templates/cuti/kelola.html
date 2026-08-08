@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Kelola Cuti')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1>Kelola Cuti</h1>
+                <p class="subtitle">Setujui atau tolak pengajuan cuti/izin/sakit karyawan</p>
+            </div>
+        </div>
+
+        <div class="flash-success" th:if="${pesan}" th:text="${pesan}"></div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>NIP</th>
+                        <th>Nama</th>
+                        <th>Jenis</th>
+                        <th>Tanggal Mulai</th>
+                        <th>Tanggal Selesai</th>
+                        <th>Alasan</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="c : ${daftarCuti}">
+                        <td th:text="${c.karyawan.nip}"></td>
+                        <td th:text="${c.karyawan.namaLengkap}"></td>
+                        <td th:text="${c.jenis}"></td>
+                        <td th:text="${c.tanggalMulai}"></td>
+                        <td th:text="${c.tanggalSelesai}"></td>
+                        <td th:text="${c.alasan}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${c.status.name() == 'DISETUJUI'} ? 'badge-green' : (${c.status.name() == 'DITOLAK'} ? 'badge-red' : 'badge-amber')"
+                                  th:text="${c.status}"></span>
+                        </td>
+                        <td>
+                            <div th:if="${c.status.name() == 'PENGAJUAN'}" style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                                <form th:action="@{/cuti/setujui/{id}(id=${c.id})}" method="post" style="display:inline"
+                                      onsubmit="return confirm('Setujui cuti ini?');">
+                                    <button type="submit" class="btn btn-primary btn-sm">Setujui</button>
+                                </form>
+                                <form th:action="@{/cuti/tolak/{id}(id=${c.id})}" method="post" style="display:inline-flex; gap:4px;"
+                                      onsubmit="return confirm('Tolak cuti ini?');">
+                                    <input type="text" name="catatanAdmin" placeholder="Alasan penolakan" required style="width:150px; padding:5px 8px; border:1px solid var(--border); border-radius:var(--radius); font-size:12px;">
+                                    <button type="submit" class="btn btn-danger btn-sm">Tolak</button>
+                                </form>
+                            </div>
+                            <span th:if="${c.status.name() != 'PENGAJUAN'}" th:text="${c.catatanAdmin} ?: '-'"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="empty-state" th:if="${#lists.isEmpty(daftarCuti)}">
+                    Belum ada pengajuan cuti.
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
