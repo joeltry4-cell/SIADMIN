@@ -5,7 +5,9 @@ import com.siadmin.model.Karyawan;
 import com.siadmin.repository.KaryawanRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class KaryawanService {
@@ -59,5 +61,15 @@ public class KaryawanService {
 
     public long count() {
         return karyawanRepository.count();
+    }
+
+    public Optional<LocalDate> jadwalCutiBerikutnya(Karyawan karyawan) {
+        if (karyawan.getSiklusCutiBulan() == null) {
+            return Optional.empty();
+        }
+        LocalDate baseline = karyawan.getTanggalMulaiSiklusCuti() != null
+                ? karyawan.getTanggalMulaiSiklusCuti()
+                : karyawan.getTanggalMasuk();
+        return Optional.of(baseline.plusMonths(karyawan.getSiklusCutiBulan()));
     }
 }

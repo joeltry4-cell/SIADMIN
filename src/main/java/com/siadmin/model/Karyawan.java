@@ -66,4 +66,14 @@ public class Karyawan {
 
     @Column(nullable = false)
     private boolean aktif = true;
+
+    @Column(length = 50)
+    private String tim;
+
+    @Column(length = 50)
+    private String shift;
+
+    private Integer siklusCutiBulan;
+
+    private LocalDate tanggalMulaiSiklusCuti;
 }

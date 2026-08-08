@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Ajukan Lembur')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1>Ajukan Lembur</h1>
+                <p class="subtitle">Catat jam lembur untuk disetujui admin</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <form th:action="@{/lembur/simpan}" th:object="${lembur}" method="post">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="tanggal">Tanggal</label>
+                        <input type="date" id="tanggal" th:field="*{tanggal}">
+                        <span class="error-text" th:if="${#fields.hasErrors('tanggal')}" th:errors="*{tanggal}"></span>
+                    </div>
+
+                    <div class="form-group"></div>
+
+                    <div class="form-group">
+                        <label for="jamMulai">Jam Mulai Lembur</label>
+                        <input type="time" id="jamMulai" th:field="*{jamMulai}">
+                        <span class="error-text" th:if="${#fields.hasErrors('jamMulai')}" th:errors="*{jamMulai}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jamSelesai">Jam Selesai Lembur</label>
+                        <input type="time" id="jamSelesai" th:field="*{jamSelesai}">
+                        <span class="error-text" th:if="${#fields.hasErrors('jamSelesai')}" th:errors="*{jamSelesai}"></span>
+                    </div>
+
+                    <div class="form-group full">
+                        <label for="alasan">Alasan Lembur</label>
+                        <textarea id="alasan" rows="3" th:field="*{alasan}"></textarea>
+                        <span class="error-text" th:if="${#fields.hasErrors('alasan')}" th:errors="*{alasan}"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Ajukan</button>
+                    <a th:href="@{/lembur}" class="btn btn-outline">Batal</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

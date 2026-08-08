@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Kelola Lembur')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1>Kelola Lembur</h1>
+                <p class="subtitle">Setujui atau tolak pengajuan lembur karyawan</p>
+            </div>
+        </div>
+
+        <div class="flash-success" th:if="${pesan}" th:text="${pesan}"></div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>NIP</th>
+                        <th>Nama</th>
+                        <th>Tanggal</th>
+                        <th>Jam Mulai</th>
+                        <th>Jam Selesai</th>
+                        <th>Jumlah Jam</th>
+                        <th>Alasan</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="l : ${daftarLembur}">
+                        <td th:text="${l.karyawan.nip}"></td>
+                        <td th:text="${l.karyawan.namaLengkap}"></td>
+                        <td th:text="${l.tanggal}"></td>
+                        <td th:text="${l.jamMulai}"></td>
+                        <td th:text="${l.jamSelesai}"></td>
+                        <td th:text="${#numbers.formatDecimal(l.jumlahJam, 1, 1)}"></td>
+                        <td th:text="${l.alasan}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${l.status.name() == 'DISETUJUI'} ? 'badge-green' : (${l.status.name() == 'DITOLAK'} ? 'badge-red' : 'badge-amber')"
+                                  th:text="${l.status}"></span>
+                        </td>
+                        <td>
+                            <div th:if="${l.status.name() == 'PENGAJUAN'}" style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                                <form th:action="@{/lembur/setujui/{id}(id=${l.id})}" method="post" style="display:inline"
+                                      onsubmit="return confirm('Setujui lembur ini?');">
+                                    <button type="submit" class="btn btn-primary btn-sm">Setujui</button>
+                                </form>
+                                <form th:action="@{/lembur/tolak/{id}(id=${l.id})}" method="post" style="display:inline-flex; gap:4px;"
+                                      onsubmit="return confirm('Tolak lembur ini?');">
+                                    <input type="text" name="catatanAdmin" placeholder="Alasan penolakan" required style="width:150px; padding:5px 8px; border:1px solid var(--border); border-radius:var(--radius); font-size:12px;">
+                                    <button type="submit" class="btn btn-danger btn-sm">Tolak</button>
+                                </form>
+                            </div>
+                            <span th:if="${l.status.name() != 'PENGAJUAN'}" th:text="${l.catatanAdmin} ?: '-'"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="empty-state" th:if="${#lists.isEmpty(daftarLembur)}">
+                    Belum ada pengajuan lembur.
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

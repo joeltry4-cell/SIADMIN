@@ -2,6 +2,7 @@ package com.siadmin.service;
 
 import com.siadmin.model.*;
 import com.siadmin.repository.CutiRepository;
+import com.siadmin.repository.KaryawanRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,11 +13,14 @@ import java.util.List;
 public class CutiService {
 
     private final CutiRepository cutiRepository;
+    private final KaryawanRepository karyawanRepository;
     private final AbsensiService absensiService;
     private final AuditLogService auditLogService;
 
-    public CutiService(CutiRepository cutiRepository, AbsensiService absensiService, AuditLogService auditLogService) {
+    public CutiService(CutiRepository cutiRepository, KaryawanRepository karyawanRepository,
+                        AbsensiService absensiService, AuditLogService auditLogService) {
         this.cutiRepository = cutiRepository;
+        this.karyawanRepository = karyawanRepository;
         this.absensiService = absensiService;
         this.auditLogService = auditLogService;
     }
@@ -61,12 +65,18 @@ public class CutiService {
         cuti.setNotifikasiDibaca(false);
         cutiRepository.save(cuti);
 
-        StatusAbsensi statusAbsensi = StatusAbsensi.valueOf(cuti.getJenis().name());
+        StatusAbsensi statusAbsensi = statusAbsensiUntuk(cuti.getJenis());
         long jumlahHari = 0;
         for (LocalDate tgl = cuti.getTanggalMulai(); !tgl.isAfter(cuti.getTanggalSelesai()); tgl = tgl.plusDays(1)) {
             absensiService.upsertUntukCuti(cuti.getKaryawan(), tgl, statusAbsensi,
                     "Otomatis dari pengajuan cuti #" + cuti.getId());
             jumlahHari++;
+        }
+
+        if (cuti.getJenis() == JenisCuti.FAMILY_VISIT) {
+            Karyawan karyawan = cuti.getKaryawan();
+            karyawan.setTanggalMulaiSiklusCuti(cuti.getTanggalSelesai().plusDays(1));
+            karyawanRepository.save(karyawan);
         }
 
         auditLogService.log(AuditLogService.currentUsername(), AksiAudit.APPROVE, "Cuti", cuti.getId(),
@@ -97,5 +107,13 @@ public class CutiService {
         List<Cuti> belumDibaca = cutiRepository.findByKaryawanAndNotifikasiDibacaFalse(karyawan);
         belumDibaca.forEach(c -> c.setNotifikasiDibaca(true));
         cutiRepository.saveAll(belumDibaca);
+    }
+
+    private StatusAbsensi statusAbsensiUntuk(JenisCuti jenis) {
+        return switch (jenis) {
+            case CUTI, FAMILY_VISIT -> StatusAbsensi.CUTI;
+            case IZIN -> StatusAbsensi.IZIN;
+            case SAKIT -> StatusAbsensi.SAKIT;
+        };
     }
 }

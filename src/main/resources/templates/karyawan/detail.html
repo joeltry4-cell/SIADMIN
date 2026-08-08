@@ -33,6 +33,11 @@
                     <span th:if="${karyawan.aktif}" class="badge badge-green">Aktif</span>
                     <span th:unless="${karyawan.aktif}" class="badge badge-gray">Nonaktif</span>
                 </div>
+                <div><strong>Tim</strong><br><span th:text="${karyawan.tim} ?: '-'"></span></div>
+                <div><strong>Shift</strong><br><span th:text="${karyawan.shift} ?: '-'"></span></div>
+                <div th:if="${jadwalCutiBerikutnya != null}">
+                    <strong>Jadwal Cuti Berikutnya</strong><br><span th:text="${jadwalCutiBerikutnya}"></span>
+                </div>
                 <div class="form-group full"><strong>Alamat</strong><br><span th:text="${karyawan.alamat}"></span></div>
             </div>
         </div>

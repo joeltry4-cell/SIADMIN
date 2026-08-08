@@ -46,7 +46,9 @@ public class KaryawanController {
 
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id, Model model) {
-        model.addAttribute("karyawan", karyawanService.findById(id));
+        Karyawan karyawan = karyawanService.findById(id);
+        model.addAttribute("karyawan", karyawan);
+        model.addAttribute("jadwalCutiBerikutnya", karyawanService.jadwalCutiBerikutnya(karyawan).orElse(null));
         return "karyawan/detail";
     }
 

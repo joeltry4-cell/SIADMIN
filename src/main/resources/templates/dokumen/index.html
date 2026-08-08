@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Dokumen Lapangan')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1>Dokumen Lapangan</h1>
+                <p class="subtitle">Export data ke Excel untuk dicetak dan ditandatangani manual</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="mt-0">Absensi Mingguan</h3>
+            <p class="text-muted">Grid kehadiran + jam lembur per divisi selama 7 hari sejak tanggal awal.</p>
+            <form class="search-bar" method="get" th:action="@{/dokumen/absensi-mingguan}">
+                <input type="date" name="awal">
+                <button type="submit" class="btn btn-outline">Download Excel</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3 class="mt-0">Roster Cuti Bulanan</h3>
+            <p class="text-muted">Riwayat cuti dan jadwal cuti berikutnya per tim, per bulan.</p>
+            <form class="search-bar" method="get" th:action="@{/dokumen/roster-cuti}">
+                <input type="month" name="bulan">
+                <button type="submit" class="btn btn-outline">Download Excel</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3 class="mt-0">Form Lembur per Karyawan</h3>
+            <p class="text-muted">Rekap lembur yang sudah disetujui untuk satu karyawan pada satu bulan.</p>
+            <form class="search-bar" method="get" th:action="@{/dokumen/form-lembur}">
+                <select name="karyawanId">
+                    <option value="">-- Pilih Karyawan --</option>
+                    <option th:each="k : ${daftarKaryawan}" th:value="${k.id}" th:text="${k.namaLengkap} + ' (' + ${k.nip} + ')'"></option>
+                </select>
+                <input type="month" name="bulan">
+                <button type="submit" class="btn btn-outline">Download Excel</button>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

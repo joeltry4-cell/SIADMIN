@@ -27,8 +27,10 @@ public class SecurityConfig {
                 .requestMatchers("/akun/**").hasRole("ADMIN")
                 .requestMatchers("/absensi/rekap", "/absensi/hapus/**").hasRole("ADMIN")
                 .requestMatchers("/cuti/kelola", "/cuti/setujui/**", "/cuti/tolak/**").hasRole("ADMIN")
+                .requestMatchers("/lembur/kelola", "/lembur/setujui/**", "/lembur/tolak/**").hasRole("ADMIN")
                 .requestMatchers("/laporan/**").hasRole("ADMIN")
                 .requestMatchers("/audit-log/**").hasRole("ADMIN")
+                .requestMatchers("/dokumen/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
