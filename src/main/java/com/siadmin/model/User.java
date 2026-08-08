@@ -32,4 +32,7 @@ public class User {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "karyawan_id")
     private Karyawan karyawan;
+
+    @Column(length = 100)
+    private String tandaTanganPath;
 }

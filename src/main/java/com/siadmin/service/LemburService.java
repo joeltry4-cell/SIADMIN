@@ -4,6 +4,7 @@ import com.siadmin.model.AksiAudit;
 import com.siadmin.model.Karyawan;
 import com.siadmin.model.Lembur;
 import com.siadmin.model.StatusLembur;
+import com.siadmin.model.User;
 import com.siadmin.repository.LemburRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,13 +64,14 @@ public class LemburService {
     }
 
     @Transactional
-    public void setujui(Long id) {
+    public void setujui(Long id, User approver) {
         Lembur lembur = findById(id);
         if (lembur.getStatus() != StatusLembur.PENGAJUAN) {
             throw new IllegalStateException("Pengajuan lembur ini sudah diproses sebelumnya");
         }
 
         lembur.setStatus(StatusLembur.DISETUJUI);
+        lembur.setDisetujuiOleh(approver);
         lemburRepository.save(lembur);
 
         auditLogService.log(AuditLogService.currentUsername(), AksiAudit.APPROVE, "Lembur", lembur.getId(),

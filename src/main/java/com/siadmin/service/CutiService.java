@@ -55,7 +55,7 @@ public class CutiService {
     }
 
     @Transactional
-    public void setujui(Long id) {
+    public void setujui(Long id, User approver) {
         Cuti cuti = findById(id);
         if (cuti.getStatus() != StatusCuti.PENGAJUAN) {
             throw new IllegalStateException("Pengajuan cuti ini sudah diproses sebelumnya");
@@ -63,6 +63,7 @@ public class CutiService {
 
         cuti.setStatus(StatusCuti.DISETUJUI);
         cuti.setNotifikasiDibaca(false);
+        cuti.setDisetujuiOleh(approver);
         cutiRepository.save(cuti);
 
         StatusAbsensi statusAbsensi = statusAbsensiUntuk(cuti.getJenis());

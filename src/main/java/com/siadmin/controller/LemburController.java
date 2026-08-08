@@ -76,8 +76,8 @@ public class LemburController {
     }
 
     @PostMapping("/setujui/{id}")
-    public String setujui(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        lemburService.setujui(id);
+    public String setujui(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal principal, RedirectAttributes redirectAttributes) {
+        lemburService.setujui(id, principal.getUser());
         redirectAttributes.addFlashAttribute("pesan", "Lembur berhasil disetujui");
         return "redirect:/lembur/kelola";
     }

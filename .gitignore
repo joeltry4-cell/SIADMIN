@@ -37,6 +37,7 @@ src/main/resources/keystore.p12
 siadmin-cert.crt
 data/
 backups/
+uploads/
 
 
 ### Claude Code local settings ###

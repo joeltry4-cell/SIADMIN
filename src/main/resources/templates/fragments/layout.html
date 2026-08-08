@@ -29,7 +29,7 @@
     </nav>
     <div class="user-box">
         <div>Masuk sebagai <strong th:text="${#authentication.name}">user</strong></div>
-        <div style="margin-top:6px;"><a th:href="@{/profil/ganti-password}" style="font-size:12px;">Ganti Password</a></div>
+        <div style="margin-top:6px;"><a th:href="@{/profil/ganti-password}" style="font-size:12px;">Ganti Password</a> &middot; <a th:href="@{/profil/tanda-tangan}" style="font-size:12px;">Tanda Tangan</a></div>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="logout">Keluar</button>
         </form>

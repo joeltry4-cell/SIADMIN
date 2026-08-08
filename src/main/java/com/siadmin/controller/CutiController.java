@@ -81,8 +81,8 @@ public class CutiController {
     }
 
     @PostMapping("/setujui/{id}")
-    public String setujui(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        cutiService.setujui(id);
+    public String setujui(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal principal, RedirectAttributes redirectAttributes) {
+        cutiService.setujui(id, principal.getUser());
         redirectAttributes.addFlashAttribute("pesan", "Cuti berhasil disetujui");
         return "redirect:/cuti/kelola";
     }

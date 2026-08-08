@@ -53,4 +53,8 @@ public class Cuti {
 
     @Column(nullable = false)
     private boolean notifikasiDibaca = true;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "disetujui_oleh_user_id")
+    private User disetujuiOleh;
 }

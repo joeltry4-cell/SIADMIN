@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Tanda Tangan')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1>Tanda Tangan</h1>
+                <p class="subtitle">Upload gambar tanda tangan untuk otomatis ditempel di dokumen (Absensi, Cuti, Lembur)</p>
+            </div>
+        </div>
+
+        <div class="card" style="max-width: 420px;">
+            <div class="flash-success" th:if="${sukses}" th:text="${sukses}"></div>
+            <div class="flash-error" th:if="${error}" th:text="${error}"></div>
+
+            <div th:if="${adaTandaTangan}" style="margin-bottom:16px;">
+                <label style="display:block; font-size:13px; font-weight:600; margin-bottom:6px;">Tanda Tangan Tersimpan</label>
+                <img th:src="@{/profil/tanda-tangan/gambar}" alt="Tanda tangan"
+                     style="max-width:100%; max-height:120px; border:1px solid var(--border); border-radius:var(--radius); background:#fff; padding:8px;">
+            </div>
+
+            <form th:action="@{/profil/tanda-tangan}" method="post" enctype="multipart/form-data">
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label for="file">Pilih Gambar (PNG/JPG, maks 500 KB)</label>
+                    <input type="file" id="file" name="file" accept="image/png,image/jpeg" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Simpan Tanda Tangan</button>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

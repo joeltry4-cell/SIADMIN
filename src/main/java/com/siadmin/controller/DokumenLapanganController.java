@@ -3,6 +3,7 @@ package com.siadmin.controller;
 import com.siadmin.model.Absensi;
 import com.siadmin.model.Karyawan;
 import com.siadmin.model.Lembur;
+import com.siadmin.repository.UserRepository;
 import com.siadmin.service.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,12 +29,15 @@ public class DokumenLapanganController {
     private final AbsensiService absensiService;
     private final CutiService cutiService;
     private final LemburService lemburService;
+    private final UserService userService;
+    private final UserRepository userRepository;
     private final AbsensiLapanganExportService absensiLapanganExportService;
     private final CutiRosterExportService cutiRosterExportService;
     private final LemburFormExportService lemburFormExportService;
 
     public DokumenLapanganController(KaryawanService karyawanService, AbsensiService absensiService,
                                       CutiService cutiService, LemburService lemburService,
+                                      UserService userService, UserRepository userRepository,
                                       AbsensiLapanganExportService absensiLapanganExportService,
                                       CutiRosterExportService cutiRosterExportService,
                                       LemburFormExportService lemburFormExportService) {
@@ -40,9 +45,21 @@ public class DokumenLapanganController {
         this.absensiService = absensiService;
         this.cutiService = cutiService;
         this.lemburService = lemburService;
+        this.userService = userService;
+        this.userRepository = userRepository;
         this.absensiLapanganExportService = absensiLapanganExportService;
         this.cutiRosterExportService = cutiRosterExportService;
         this.lemburFormExportService = lemburFormExportService;
+    }
+
+    private Map<Long, byte[]> resolveTandaTangan(List<Karyawan> karyawanList) {
+        Map<Long, byte[]> hasil = new HashMap<>();
+        for (Karyawan k : karyawanList) {
+            userRepository.findByKaryawan(k)
+                    .flatMap(userService::bacaTandaTangan)
+                    .ifPresent(ttd -> hasil.put(k.getId(), ttd));
+        }
+        return hasil;
     }
 
     @GetMapping
@@ -64,11 +81,12 @@ public class DokumenLapanganController {
         List<Lembur> lembur = lemburService.findApprovedByRentang(a, akhir);
         Map<Long, List<Lembur>> lemburPerKaryawan = lembur.stream()
                 .collect(Collectors.groupingBy(x -> x.getKaryawan().getId()));
+        Map<Long, byte[]> tandaTanganPerKaryawan = resolveTandaTangan(karyawanAktif);
 
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=absensi-mingguan-" + a + ".xlsx");
         absensiLapanganExportService.tulisAbsensiMingguan(karyawanAktif, a, akhir, absensiPerKaryawan, lemburPerKaryawan,
-                response.getOutputStream());
+                tandaTanganPerKaryawan, response.getOutputStream());
     }
 
     @GetMapping("/roster-cuti")
@@ -78,10 +96,11 @@ public class DokumenLapanganController {
         List<Karyawan> karyawanAktif = karyawanService.findAll().stream().filter(Karyawan::isAktif).toList();
         Map<Long, List<com.siadmin.model.Cuti>> cutiPerKaryawan = karyawanAktif.stream()
                 .collect(Collectors.toMap(Karyawan::getId, cutiService::findByKaryawan));
+        Map<Long, byte[]> tandaTanganPerKaryawan = resolveTandaTangan(karyawanAktif);
 
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=roster-cuti-" + b + ".xlsx");
-        cutiRosterExportService.tulisRosterCuti(karyawanAktif, b, cutiPerKaryawan, response.getOutputStream());
+        cutiRosterExportService.tulisRosterCuti(karyawanAktif, b, cutiPerKaryawan, tandaTanganPerKaryawan, response.getOutputStream());
     }
 
     @GetMapping("/form-lembur")

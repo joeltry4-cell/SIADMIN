@@ -52,6 +52,10 @@ public class Lembur {
     @Column(length = 255)
     private String catatanAdmin;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "disetujui_oleh_user_id")
+    private User disetujuiOleh;
+
     public double getJumlahJam() {
         if (jamMulai == null || jamSelesai == null || !jamSelesai.isAfter(jamMulai)) {
             return 0;
