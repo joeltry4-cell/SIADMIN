@@ -34,7 +34,9 @@ build/
 
 ### SIADMIN local secrets/data ###
 src/main/resources/keystore.p12
+siadmin-cert.crt
 data/
+backups/
 
 
 ### Claude Code local settings ###
