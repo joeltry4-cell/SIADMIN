@@ -50,4 +50,7 @@ public class Cuti {
 
     @Column(length = 255)
     private String catatanAdmin;
+
+    @Column(nullable = false)
+    private boolean notifikasiDibaca = true;
 }

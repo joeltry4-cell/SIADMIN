@@ -18,7 +18,7 @@
         <a th:href="@{/karyawan}" sec:authorize="hasRole('ADMIN')">Data Karyawan</a>
         <a th:href="@{/absensi}">Absensi Saya</a>
         <a th:href="@{/absensi/rekap}" sec:authorize="hasRole('ADMIN')">Rekap Absensi</a>
-        <a th:href="@{/cuti}">Cuti Saya</a>
+        <a th:href="@{/cuti}">Cuti Saya <span th:if="${cutiBelumDibaca > 0}" class="badge badge-red" th:text="${cutiBelumDibaca}"></span></a>
         <a th:href="@{/cuti/kelola}" sec:authorize="hasRole('ADMIN')">Kelola Cuti</a>
         <a th:href="@{/laporan/bulanan}" sec:authorize="hasRole('ADMIN')">Laporan Bulanan</a>
         <a th:href="@{/akun}" sec:authorize="hasRole('ADMIN')">Manajemen Akun</a>

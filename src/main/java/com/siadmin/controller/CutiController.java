@@ -30,6 +30,9 @@ public class CutiController {
         Karyawan karyawan = principal.getUser().getKaryawan();
         model.addAttribute("karyawan", karyawan);
         model.addAttribute("daftarCuti", karyawan != null ? cutiService.findByKaryawan(karyawan) : List.of());
+        if (karyawan != null) {
+            cutiService.tandaiSudahDibaca(karyawan);
+        }
         return "cuti/list";
     }
 

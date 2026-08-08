@@ -11,6 +11,10 @@ public interface CutiRepository extends JpaRepository<Cuti, Long> {
 
     List<Cuti> findByKaryawanOrderByTanggalPengajuanDescIdDesc(Karyawan karyawan);
 
+    long countByKaryawanAndNotifikasiDibacaFalse(Karyawan karyawan);
+
+    List<Cuti> findByKaryawanAndNotifikasiDibacaFalse(Karyawan karyawan);
+
     @Query("select c from Cuti c join fetch c.karyawan order by c.tanggalPengajuan desc, c.id desc")
     List<Cuti> findAllOrderByTanggalPengajuanDesc();
 }

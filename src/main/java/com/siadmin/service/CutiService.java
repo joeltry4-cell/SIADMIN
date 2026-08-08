@@ -58,6 +58,7 @@ public class CutiService {
         }
 
         cuti.setStatus(StatusCuti.DISETUJUI);
+        cuti.setNotifikasiDibaca(false);
         cutiRepository.save(cuti);
 
         StatusAbsensi statusAbsensi = StatusAbsensi.valueOf(cuti.getJenis().name());
@@ -82,8 +83,19 @@ public class CutiService {
 
         cuti.setStatus(StatusCuti.DITOLAK);
         cuti.setCatatanAdmin(catatanAdmin);
+        cuti.setNotifikasiDibaca(false);
         cutiRepository.save(cuti);
         auditLogService.log(AuditLogService.currentUsername(), AksiAudit.REJECT, "Cuti", cuti.getId(),
                 "Cuti " + cuti.getKaryawan().getNamaLengkap() + " ditolak: " + catatanAdmin);
+    }
+
+    public long hitungBelumDibaca(Karyawan karyawan) {
+        return cutiRepository.countByKaryawanAndNotifikasiDibacaFalse(karyawan);
+    }
+
+    public void tandaiSudahDibaca(Karyawan karyawan) {
+        List<Cuti> belumDibaca = cutiRepository.findByKaryawanAndNotifikasiDibacaFalse(karyawan);
+        belumDibaca.forEach(c -> c.setNotifikasiDibaca(true));
+        cutiRepository.saveAll(belumDibaca);
     }
 }
